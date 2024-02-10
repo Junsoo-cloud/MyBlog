@@ -1,15 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
+from forms import RegistrationForm, LoginForm
 
 app = Flask('app')
 
+arr.config['SECRET_KEY'] = '34e2ee1548491bcf261d357431cf64e9'
 posts = [{
     'author': 'Junsoo',
-    'title': '해윤이와 곧 일년',
+    'title': 'Flaskblog 1',
     'content': 'First post content',
     'date_posted': 'April 20, 2018'
 }, {
     'author': 'Seung',
-    'title': '정해윤 사랑해',
+    'title': 'Flaskblog 2',
     'content': 'Second post content',
     'date_posted': 'April 21, 2018'
 }]
@@ -23,6 +25,17 @@ def hello_world():
 @app.route('/about')
 def about():
   return render_template('about.html', title='About')  # Static
+
+
+@app.route('/register')
+def register():
+  form = RegistrationForm()
+  return render_template('register.html', title='Register', form=form)
+
+@app.route('/login')
+def login():
+  form = LoginForm()
+  return render_template('login.html', title='Login', form=form)
 
 
 '''
