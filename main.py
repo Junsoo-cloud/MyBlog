@@ -1,9 +1,9 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 
 app = Flask('app')
 
-arr.config['SECRET_KEY'] = '34e2ee1548491bcf261d357431cf64e9'
+app.config['SECRET_KEY'] = '34e2ee1548491bcf261d357431cf64e9'
 posts = [{
     'author': 'Junsoo',
     'title': 'Flaskblog 1',
@@ -18,7 +18,7 @@ posts = [{
 
 
 @app.route('/')
-def hello_world():
+def home():
   return render_template('home.html', posts=posts)  # Arguments = data
 
 
@@ -27,14 +27,24 @@ def about():
   return render_template('about.html', title='About')  # Static
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
   form = RegistrationForm()
+  if form.validate_on_submit():
+    flash(f'Account created for {form.username.data}!', 'success')
+    return redirect(url_for('home'))
   return render_template('register.html', title='Register', form=form)
 
-@app.route('/login')
+
+@app.route('/login', methods=["POST", "GET"])
 def login():
   form = LoginForm()
+  if form.validate_on_submit():
+    if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+      flash('You have been logged in!', 'success')
+      return redirect(url_for('home'))
+    else:
+      flash('Login Unsuccessful. Please check username and password', 'danger')
   return render_template('login.html', title='Login', form=form)
 
 
@@ -47,3 +57,8 @@ __name__ means global variable that python interpreter already made before runni
 app.run(host='0.0.0.0', port=8080, debug=True)
 
 # https://www.youtube.com/watch?v=QnDWIZuWYW0&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=3 Bootstrap
+# https://www.geeksforgeeks.org/flask-wtf-explained-how-to-use-it/
+
+# https://www.geeksforgeeks.org/get-post-requests-using-python/
+
+# https://www.freecodecamp.org/news/build-basic-forms-with-html/ forms html
