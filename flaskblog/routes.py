@@ -1,3 +1,5 @@
+import secrets
+import os
 from flask import render_template, url_for, flash, redirect, request
 from flaskblog.models import User, Post
 from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm
@@ -57,7 +59,8 @@ def login():
     if user and bcrypt.check_password_hash(user.password, form.password.data):
       login_user(user, remember=form.remember.data)
       next_page = request.args.get('next')
-      print(next_page)
+      for key, value in request.args.items():
+        print(key, value)
       flash('Login successful!', 'success')
       return redirect(next_page) if next_page else redirect(url_for('home'))
     else:
@@ -71,11 +74,27 @@ def logout():
   return redirect(url_for('home'))
 
 
+def save_picture(form_picture):
+  random_hex = secrets.token_hex(8)
+  _, f_ext = os.path.splitext(form_picture.filename)  # return name, ext itself
+  print(f'f_ext is {f_ext}')
+  picture_fn = random_hex + f_ext
+  print(f'picture_fn is {picture_fn}')
+  picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+  print(f'app.root_path is {app.root_path}')
+  print(f'picture_path is {picture_path}')
+  form_picture.save(picture_path)
+  return picture_fn
+
+
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
   form = UpdateAccountForm()
   if form.validate_on_submit():
+    if form.picture.data:
+      picture_file = save_picture(form.picture.data)
+      current_user.image_file = picture_file
     current_user.username = form.username.data
     current_user.email = form.email.data
     db.session.commit()

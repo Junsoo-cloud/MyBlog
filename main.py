@@ -5,7 +5,8 @@ if __name__ == '__main__':
 # 827 5
 # 1905
 
-# https://www.youtube.com/watch?v=CSHx6eCkmv0&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=7 26분
+# https://www.youtube.com/watch?v=803Ei2Sq-Zs&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=7 35분
+
 # https://www.elancer.co.kr/blog/view?seq=162 PHP 관한블로그
 
 # https://www.geeksforgeeks.org/post-redirect-get-prg-design-pattern/ POST GET pattern
