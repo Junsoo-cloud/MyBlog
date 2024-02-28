@@ -1,27 +1,17 @@
 import secrets
 import os
-from flask import render_template, url_for, flash, redirect, request
+from PIL import Image
+from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog.models import User, Post
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flaskblog import app, db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-
-posts = [{
-    'author': 'Corey Schafer',
-    'title': 'Blog Post 1',
-    'content': 'First post content',
-    'date_posted': 'April 20, 2018'
-}, {
-    'author': 'Jane Doe',
-    'title': 'Blog Post 2',
-    'content': 'Second post content',
-    'date_posted': 'April 21, 2018'
-}]
 
 
 @app.route("/")
 @app.route("/home")
 def home():
+  posts = Post.query.all()
   return render_template('home.html', posts=posts)
 
 
@@ -81,9 +71,13 @@ def save_picture(form_picture):
   picture_fn = random_hex + f_ext
   print(f'picture_fn is {picture_fn}')
   picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+  # Image resizing with Pillow package
+  output_size = (125, 125)
+  i = Image.open(form_picture)
+  i.thumbnail(output_size)
   print(f'app.root_path is {app.root_path}')
   print(f'picture_path is {picture_path}')
-  form_picture.save(picture_path)
+  i.save(picture_path)
   return picture_fn
 
 
@@ -100,6 +94,7 @@ def account():
     db.session.commit()
     flash('Your accout has been updated!', 'success')
     return redirect(url_for('account'))
+  # PTG pattern
   elif request.method == "GET":
     form.username.data = current_user.username
     form.email.data = current_user.email
@@ -110,3 +105,64 @@ def account():
                          title='Account',
                          image_file=image_file,
                          form=form)
+
+
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+  form = PostForm()
+  if form.validate_on_submit():
+    # Add post to database
+    post = Post(title=form.title.data,
+                content=form.content.data,
+                author=current_user)
+    db.session.add(post)
+    db.session.commit()
+    flash('Your post has been created!', 'success')
+    return redirect(url_for('home'))
+  return render_template('create_post.html',
+                         title='Account',
+                         form=form,
+                         legend="New Post")
+
+
+@app.route("/post/<int:post_id>")
+def post(post_id):
+  post = Post.query.get_or_404(post_id)
+  return render_template('post.html', title=post.title, post=post)
+
+
+@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+@login_required
+# Updating Post
+def update_post(post_id):
+  post = Post.query.get_or_404(post_id)  # if not, raising error 404
+  if post.author != current_user:
+    abort(403)  # HTTP response for a forbidden route
+  form = PostForm()
+  if form.validate_on_submit():
+    post.title = form.title.data
+    post.content = form.content.data
+    db.session.commit()
+    flash('Your post has been updated!', 'success')
+    return redirect(url_for('post', post_id=post.id))
+  # PTG pattern
+  elif request.method == 'GET':
+    form.title.data = post.title
+    form.content.data = post.content
+  return render_template('create_post.html',
+                         title='Update Post',
+                         form=form,
+                         legend="Update Post")
+
+
+@app.route("/post/<int:post_id>/delete", methods=['POST'])
+@login_required
+def delete_post(post_id):
+  post = Post.query.get_or_404(post_id)  # if not, raising error 404
+  if post.author != current_user:
+    abort(403)  # HTTP response for a forbidden route
+  db.session.delete(post)
+  db.session.commit()
+  flash('Your post has been deleted!', 'success')
+  return redirect(url_for('home'))
