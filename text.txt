@@ -1,0 +1,34 @@
+<current> 
+
+# https://www.youtube.com/watch?v=803Ei2Sq-Zs&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=7 35분
+
+<Index # 9 how to push Json file to db>
+
+In case anyone wants to add the json file into the db, i just figure it out a way of doing it:
+
+run python
+from flaskblog import db
+from flaskblog.models import Post
+import json
+
+file = open('<path-to-your-file>'. 'r')
+data = json.load(file)
+
+for x in data:
+     post = Post(title = x.get('title'), content = x.get('content'), user_id = x.get('user_id'))
+     db.session.add(post)
+
+db.session.add(commit)
+
+
+https://wikidocs.net/81045 # 위키독스 
+
+
+
+<POST method>
+
+This line of code represents an HTML form element.
+
+The method="POST" attribute specifies that the form data will be sent to the server using the POST HTTP method, which is commonly used for submitting data to a server.
+The action="" attribute defines the URL where the form data will be submitted. In this case, the empty string means that the form will be submitted to the current URL.
+The enctype="multipart/form-data" attribute specifies how the form data should be encoded before sending it to the server. It is used when the form includes file upload fields, allowing files to be uploaded along with other form data.
