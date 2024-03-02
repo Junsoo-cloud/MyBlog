@@ -1,6 +1,6 @@
 <current> 
 
-# https://www.youtube.com/watch?v=803Ei2Sq-Zs&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=7 35분
+# https://www.youtube.com/watch?v=803Ei2Sq-Zs&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=9 35분
 
 <Index # 9 how to push Json file to db>
 
@@ -22,7 +22,7 @@ db.session.add(commit)
 
 
 https://wikidocs.net/81045 # 위키독스 
-
+https://wikidocs.net/83687 #클로저와 데코레이터
 
 
 <POST method>
