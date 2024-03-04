@@ -1,10 +1,11 @@
 <current> 
 
-# https://www.youtube.com/watch?v=803Ei2Sq-Zs&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=10 6분
+# https://www.youtube.com/watch?v=Wfx4YBzg16s&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&index=11 21분 -> 블루프린트 다 바꿔야함
 
 <Index # 9 how to push Json file to db>
 
 In case anyone wants to add the json file into the db, i just figure it out a way of doing it:
+
 
 run python
 from flaskblog import db
