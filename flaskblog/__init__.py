@@ -6,7 +6,7 @@ from flask_login import LoginManager
 app = Flask(__name__)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
+login_manager = LoginManager(app)   # Configure the login manager
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 

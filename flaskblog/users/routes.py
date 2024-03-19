@@ -33,8 +33,11 @@ def login():
     return redirect(url_for('home'))
   form = LoginForm()
   if form.validate_on_submit():
+    # Get the user from the database
     user = User.query.filter_by(email=form.email.data).first()
+    # Check if the user exists and the password is correct
     if user and bcrypt.check_password_hash(user.password, form.password.data):
+      # Log the user in
       login_user(user, remember=form.remember.data)
       next_page = request.args.get('next')
       for key, value in request.args.items():
@@ -42,12 +45,14 @@ def login():
       flash('Login successful!', 'success')
       return redirect(next_page) if next_page else redirect(url_for('home'))
     else:
+      # The user does not exist or the password is incorrect
       flash('Login Unsuccessful. Please check username and password', 'danger')
   return render_template('login.html', title='Login', form=form)
 
 
 @users.route("/logout")
 def logout():
+  # Log the user out
   logout_user()
   return redirect(url_for('home'))
 

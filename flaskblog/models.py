@@ -3,12 +3,15 @@ from itsdangerous.url_safe import URLSafeSerializer as Serializer
 from datetime import datetime
 from flask_login import UserMixin
 
+# UserMixin(Class of flask_login library) : User authetication and management. User class inherits UserMixin class.
+
 
 @login_manager.user_loader
 def load_user(user_id):
   return User.query.get(int(user_id))
 
 
+# Create a User class that inherits from UserMixin
 class User(db.Model, UserMixin):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(20), unique=True, nullable=False)
